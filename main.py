@@ -31,11 +31,11 @@ def int_input(prompt_: str, max_: int = -1, min_: int = 1) -> int:
             if min_ <= input_int <= max_ or (min_ <= input_int and max_ == -1):
                 return input_int
             elif input_int > max_ != -1:
-                ERROR << "Angka terlalu banyak!\n"
+                ERROR << "Angka terlalu banyak!"
             elif input_int < min_:
-                ERROR << "Angka terlalu sedikit!\n"
+                ERROR << "Angka terlalu sedikit!"
         else:
-            ERROR << "Masukkan angka!\n"
+            ERROR << "Masukkan angka!"
 
 
 def clear():
@@ -47,25 +47,25 @@ def line():
 
 
 def do_login():
-    INFO << "Masukkan Username/Email/Telepon\n"
+    INFO << "Masukkan Username/Email/Telepon"
     user = input(INPUT + "User: ")
-    INFO << "Masukkan Password\n"
+    INFO << "Masukkan Password"
     password = input(INPUT + "Password: ")
-    INFO << "Sedang Login...\n"
+    INFO << "Sedang Login..."
 
     login, success = Login.init(user, password)
 
     if login is None:
-        ERROR << "Login error\n"
+        ERROR << "Login error"
         exit(1)
 
     if success:
         with open("cookie", 'wb') as f:
             pickle.dump(login.session.cookies, f)
-            SUCCESS << "Login sukses\n"
+            SUCCESS << "Login sukses"
         exit(0)
 
-    INFO << "Pilih Metode Verifikasi\n"
+    INFO << "Pilih Metode Verifikasi"
     print(Fore.GREEN + "[1]", Fore.BLUE + "WhatsApp")
     print(Fore.GREEN + "[2]", Fore.BLUE + "SMS")
     print(Fore.GREEN + "[3]", Fore.BLUE + "Telepon")
@@ -79,19 +79,19 @@ def do_login():
 
     with open("cookie", 'wb') as f:
         pickle.dump(cookie, f)
-        SUCCESS << "Login sukses\n"
+        SUCCESS << "Login sukses"
 
 
 def main():
-    INFO << "Mengambil Informasi User...\n"
+    INFO << "Mengambil Informasi User..."
 
     with open("cookie", 'rb') as f:
         bot = ShopeeBot(pickle.load(f))
 
-    INFO << "Welcome " << bot.user.username << "\n"
+    INFO << f"Welcome {Fore.GREEN}{bot.user.username}"
     print()
 
-    INFO << "Masukkan Url Barang\n"
+    INFO << "Masukkan Url Barang"
     url = input(INPUT + "Url: ")
     item = bot.fetch_item_from_url(url)
     line()
@@ -106,7 +106,7 @@ def main():
     selected_model = 0
 
     if len(item.models) > 1:
-        INFO << "Pilih Model/Variasi\n"
+        INFO << "Pilih Model/Variasi"
         line()
 
         for index, model in enumerate(item.models):
@@ -120,7 +120,7 @@ def main():
         selected_model = int_input("Pilihan: ", len(item.models))-1
         print()
 
-    INFO << "Pilih Metode Pembayaran\n"
+    INFO << "Pilih Metode Pembayaran"
 
     for index, channel in enumerate(AvailablePaymentChannels.lists):
         print(f"{Fore.GREEN}[{index+1}] {Fore.BLUE}{channel.name}")
@@ -141,34 +141,34 @@ def main():
     if not item.flash_sale:
         if item.upcoming_flash_sale is not None:
             flash_sale_start = datetime.fromtimestamp(item.upcoming_flash_sale.start_time)
-            INFO << "Waktu Flash Sale: " << flash_sale_start.strftime("%H:%M:%S") << "\n"
-            INFO << "Menunggu Flash Sale...\r"
+            INFO << f"Waktu Flash Sale: {flash_sale_start.strftime('%H:%M:%S')}"
+            print(INFO, "Menunggu Flash Sale...\r", end="")
             time.sleep((datetime.fromtimestamp(item.upcoming_flash_sale.start_time) - datetime.now())
                        .total_seconds() - 2)
-            INFO << "Bersiap siap...        \n"
+            INFO << "Bersiap siap...         "
 
             while not item.flash_sale:
                 item = bot.fetch_item(item.item_id, item.shop_id)
         else:
-            ERROR << "Flash Sale telah lewat\n"
+            ERROR << "Flash Sale telah lewat"
             exit(0)
 
-    INFO << "Flash Sale telah tiba\n"
+    INFO << "Flash Sale telah tiba"
     start = datetime.now()
-    INFO << "Menambah item ke Cart...\n"
+    INFO << "Menambah item ke Cart..."
     cart_item = bot.add_to_cart(item, selected_model)
-    INFO << "Checkout...\n"
+    INFO << "Checkout..."
     ok = bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
     end = datetime.now() - start
 
     if ok:
-        INFO << f"Item berhasil dibeli dalam waktu {end.seconds} detik {end.microseconds // 1000}"\
-            " milidetik\n"
+        INFO << f"Item berhasil dibeli dalam waktu {Fore.YELLOW}{end.seconds} detik {end.microseconds // 1000}" \
+            " milidetik"
     else:
-        ERROR << "Checkout error\n"
+        ERROR << "Checkout error"
         exit(1)
 
-    SUCCESS << "Proses selesai\n"
+    SUCCESS << "Proses selesai"
 
 
 if __name__ == "__main__":
