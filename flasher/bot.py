@@ -111,10 +111,10 @@ class ShopeeBot:
         if data is None:
             return False
 
-        self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout"],
-                          data=data)
+        resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout"],
+                                 data=data)
 
-        return True
+        return "error" not in resp.json() and resp.ok
 
     def __checkout_get(self, item: CartItem, payment: Payment) -> t.Optional[bytes]:
         true, false, null = True, False, None

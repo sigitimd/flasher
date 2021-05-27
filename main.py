@@ -158,10 +158,16 @@ def main():
     INFO << "Menambah item ke Cart...\n"
     cart_item = bot.add_to_cart(item, selected_model)
     INFO << "Checkout...\n"
-    bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
+    ok = bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
     end = datetime.now() - start
-    INFO << "Item berhasil dibeli dalam waktu " << end.seconds << " detik " << end.microseconds // 1000 <<\
-        " milidetik\n"
+
+    if ok:
+        INFO << f"Item berhasil dibeli dalam waktu {end.seconds} detik {end.microseconds // 1000}"\
+            " milidetik\n"
+    else:
+        ERROR << "Checkout error\n"
+        exit(1)
+
     SUCCESS << "Proses selesai\n"
 
 
