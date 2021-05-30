@@ -22,7 +22,7 @@ def int_input(prompt_: str, max_: int = -1, min_: int = 1) -> int:
     input_: str
 
     while True:
-        input_ = input(f"{INPUT} {prompt_}")
+        input_ = input(f"{INPUT} {prompt_}{Fore.RESET}")
 
         if input_.isdigit():
             input_int = int(input_)
@@ -51,9 +51,9 @@ def printerror(e: Exception):
 
 def do_login():
     INFO << "Masukkan Username/Email/Telepon"
-    user = input(INPUT + "User: ")
+    user = input(INPUT + "User: " + Fore.RESET)
     INFO << "Masukkan Password"
-    password = input(INPUT + "Password: ")
+    password = input(INPUT + "Password: " + Fore.RESET)
     INFO << "Sedang Login..."
 
     login, success = None, None
@@ -83,7 +83,7 @@ def do_login():
             1: Login.OTPChannel.WHATSAPP,
             2: Login.OTPChannel.SMS,
             3: Login.OTPChannel.CALL
-        }[verification_channel]).verify(input(INPUT + "Masukkan Kode Verifikasi: "))
+        }[verification_channel]).verify(input(INPUT + "Masukkan Kode Verifikasi: " + Fore.RESET))
     except error.LoginError as e:
         printerror(e)
 
@@ -110,7 +110,7 @@ def main():
 
     while True:
         try:
-            url = input(INPUT + "Url: ")
+            url = input(INPUT + "Url: " + Fore.RESET)
             item = bot.fetch_item_from_url(url)
             break
         except (error.ItemNotFoundError, ValueError) as e:
