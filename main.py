@@ -3,11 +3,10 @@ import pickle
 import sys
 import time
 from datetime import datetime
-import typing as t
 
 from colorama import Fore, init
-from flasher import Login, ShopeeBot, AvailablePaymentChannels
-from flasher.types import Item, User, CartItem, Payment
+from flasher import Login, ShopeeBot, AvailablePaymentChannels, error
+from flasher.types import Payment
 import colorlog
 
 
@@ -46,6 +45,10 @@ def line():
     print("-" * 32)
 
 
+def printerror(e: Exception):
+    ERROR << f"{type(e).__name__}: {e}"
+
+
 def do_login():
     INFO << "Masukkan Username/Email/Telepon"
     user = input(INPUT + "User: ")
@@ -53,11 +56,12 @@ def do_login():
     password = input(INPUT + "Password: ")
     INFO << "Sedang Login..."
 
-    login, success = Login.init(user, password)
+    login, success = None, None
 
-    if login is None:
-        ERROR << "Login error"
-        exit(1)
+    try:
+        login, success = Login.init(user, password)
+    except error.LoginError as e:
+        printerror(e)
 
     if success:
         with open("cookie", 'wb') as f:
@@ -71,11 +75,17 @@ def do_login():
     print(Fore.GREEN + "[3]", Fore.BLUE + "Telepon")
     print()
     verification_channel = int_input("Input: ", 3, 1)
-    cookie = login.send_otp({
-        1: Login.OTPChannel.WHATSAPP,
-        2: Login.OTPChannel.SMS,
-        3: Login.OTPChannel.CALL
-    }[verification_channel]).verify(input(INPUT + "Masukkan Kode Verifikasi: "))
+
+    cookie = None
+
+    try:
+        cookie = login.send_otp({
+            1: Login.OTPChannel.WHATSAPP,
+            2: Login.OTPChannel.SMS,
+            3: Login.OTPChannel.CALL
+        }[verification_channel]).verify(input(INPUT + "Masukkan Kode Verifikasi: "))
+    except error.LoginError as e:
+        printerror(e)
 
     with open("cookie", 'wb') as f:
         pickle.dump(cookie, f)
@@ -86,14 +96,26 @@ def main():
     INFO << "Mengambil Informasi User..."
 
     with open("cookie", 'rb') as f:
-        bot = ShopeeBot(pickle.load(f))
+        try:
+            bot = ShopeeBot(pickle.load(f))
+        except error.LoginError as e:
+            printerror(e)
+            exit(1)
 
     INFO << f"Welcome {Fore.GREEN}{bot.user.username}"
     print()
 
     INFO << "Masukkan Url Barang"
-    url = input(INPUT + "Url: ")
-    item = bot.fetch_item_from_url(url)
+    item = None
+
+    while True:
+        try:
+            url = input(INPUT + "Url: ")
+            item = bot.fetch_item_from_url(url)
+            break
+        except (error.ItemNotFoundError, ValueError) as e:
+            printerror(e)
+
     line()
     print(Fore.LIGHTBLUE_EX, "Nama:", Fore.GREEN, item.name)
     print(Fore.LIGHTBLUE_EX, "Harga:", Fore.GREEN, item.price // 99999)
@@ -153,22 +175,19 @@ def main():
             ERROR << "Flash Sale telah lewat"
             exit(0)
 
-    INFO << "Flash Sale telah tiba"
-    start = datetime.now()
-    INFO << "Menambah item ke Cart..."
-    cart_item = bot.add_to_cart(item, selected_model)
-    INFO << "Checkout..."
-    ok = bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
-    end = datetime.now() - start
-
-    if ok:
+    try:
+        INFO << "Flash Sale telah tiba"
+        start = datetime.now()
+        INFO << "Menambah item ke Cart..."
+        cart_item = bot.add_to_cart(item, selected_model)
+        INFO << "Checkout..."
+        bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
+        end = datetime.now() - start
         INFO << f"Item berhasil dibeli dalam waktu {Fore.YELLOW}{end.seconds} detik {end.microseconds // 1000}" \
-            " milidetik"
-    else:
-        ERROR << "Checkout error"
-        exit(1)
-
-    SUCCESS << "Proses selesai"
+                " milidetik"
+        SUCCESS << "Proses selesai"
+    except error.CheckoutError as e:
+        printerror(e)
 
 
 if __name__ == "__main__":

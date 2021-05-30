@@ -11,7 +11,7 @@ class PaymentChannel:
     """
     name: str
     channel_id: int
-    options: t.Dict[str, str] = None
+    options: t.Optional[t.Dict[str, str]] = None
     version: int = 2
 
     def option_keys(self) -> t.List[str]:
@@ -40,5 +40,8 @@ class Payment:
                            channel.options[channel.option_keys()[selected_option]], channel.version)
         elif type_ == str:
             return Payment(channel.name, channel.channel_id, channel.options[selected_option], channel.version)
+
+        if channel.has_option():
+            raise ValueError("The channel has an option")
 
         return Payment(channel.name, channel.channel_id, None, channel.version)

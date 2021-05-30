@@ -9,6 +9,7 @@ import typing as t
 import requests
 from . import _urls
 from .constant import useragent
+from . import error
 
 
 class Login:
@@ -44,9 +45,10 @@ class Login:
                                  })
         data = resp.json()
 
-        if data["error"] != 77:
-            # login error
-            return None, False
+        if data["error"] == 3:
+            raise error.LoginError("permintaan kode verifikasi melebihi batas, coba lagi nanti")
+        elif data["error"] == 2:
+            raise error.LoginError("username/password tidak valid")
 
         return self, self.session.cookies.get("SPC_U") != "-"
 
@@ -72,6 +74,8 @@ class Login:
 
         if data["error"] is None:
             return self.session.cookies
+        else:
+            raise error.LoginError("error ketika memverifikasi kode")
 
     @staticmethod
     def randomize_token() -> str:

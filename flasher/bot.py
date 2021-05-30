@@ -6,6 +6,7 @@ import requests
 from . import _urls, _getordefault
 from .types import User, Item, CartItem, Payment
 from .constant import useragent
+from . import error
 
 
 class ShopeeBot:
@@ -23,7 +24,7 @@ class ShopeeBot:
         data = _getordefault.GetOrDefault(resp.json())
 
         if len(data) == 0:
-            raise Exception("login error")
+            raise error.LoginError("cookie tidak valid, silahkan coba login ulang")
 
         return User(
             data("userid"), data("shopid"), data("username"), data("email"), data("phone"),
@@ -60,9 +61,14 @@ class ShopeeBot:
         if matches:
             return self.fetch_item(int(matches.group("itemid")), int(matches.group("shopid")))
 
+        raise ValueError("url tidak valid")
+
     def fetch_item(self, itemid: int, shopid: int) -> Item:
         resp = self.session.get(_urls.MALL_PREFIX + _urls.PATHS["get_item"] % (itemid, shopid))
         data = _getordefault.GetOrDefault(resp.json()["item"])
+
+        if data.data is None:
+            raise error.ItemNotFoundError("item tidak ditemukan")
 
         return Item(
             data["add_on_deal_info"]("add_on_deal_id"), data("brand"),
@@ -79,9 +85,9 @@ class ShopeeBot:
             ), data("view_count")
         )
 
-    def add_to_cart(self, item: Item, selected_model: int = 0) -> t.Optional[CartItem]:
+    def add_to_cart(self, item: Item, selected_model: int = 0) -> CartItem:
         if item.stock == 0:
-            return  # None
+            raise error.CheckoutError("stok item habis")
 
         resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["add_to_cart"],
                                  json={
@@ -95,7 +101,9 @@ class ShopeeBot:
         data = resp.json()
 
         if data["error"] != 0:
-            return  # None
+            print(resp.text)
+
+            raise error.CheckoutError(f"error code: {data['error']}")
 
         data = data["data"]["cart_item"]
 
@@ -105,16 +113,18 @@ class ShopeeBot:
             item.price, item.shop_id
         )
 
-    def checkout(self, item: CartItem, payment: Payment) -> bool:
-        data = self.__checkout_get(item, payment)
-
-        if data is None:
-            return False
-
+    def checkout(self, item: CartItem, payment: Payment):
         resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout"],
-                                 data=data)
+                                 data=self.__checkout_get(item, payment))
 
-        return "error" not in resp.json() and resp.ok
+        if "error" in resp.json():
+            print(resp.text)
+
+            raise error.CheckoutError("checkout error")
+        elif resp.status_code == 406:
+            print(resp.text)
+
+            raise error.CheckoutError("item mungkin telah habis")
 
     def __checkout_get(self, item: CartItem, payment: Payment) -> t.Optional[bytes]:
         true, false, null = True, False, None
@@ -221,6 +231,7 @@ class ShopeeBot:
         if not resp.ok:
             print(resp.status_code)
             print(resp.text)
-            return
+
+            raise error.CheckoutError("error mengambil info checkout")
 
         return resp.content
