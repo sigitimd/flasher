@@ -26,7 +26,7 @@ Jika belum install modul `requests` dan `colorama`, silahkan install terlebih da
 ```
 pip install requests colorama
 ```
-Jika sudah, login dengan mengetikkan perintah berikut
+Setelah itu login dengan mengetikkan perintah berikut
 ```
 python main.py login
 ```
