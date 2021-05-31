@@ -16,11 +16,17 @@ pkg install python
 ```
 
 # Penggunaan
-Pertama, siapkan/install modul `requests` dan `colorama` terlebih dahulu
+Pertama, clone repo ini dulu
+```
+git clone https://github.com/bro-11/flasher
+```
+Selanjutnya masuk ke direktori `flasher` dengan perintah `cd flasher` (buat yg blm tau)
+
+Jika belum install modul `requests` dan `colorama`, silahkan install terlebih dahulu
 ```
 pip install requests colorama
 ```
-Jika sudah, silahkan login dengan mengetikkan perintah berikut
+Jika sudah, login dengan mengetikkan perintah berikut
 ```
 python main.py login
 ```
