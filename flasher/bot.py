@@ -28,13 +28,13 @@ class ShopeeBot:
 
         return User(
             data("userid"), data("shopid"), data("username"), data("email"), data("phone"),
-            data["phone_verified"], User.Address(
+            data("phone_verified"), _getordefault.first_ifn_null(User.Address(
                 data["default_address"]("address"),
                 data["default_address"]("city"),
                 data["default_address"]("country"),
                 data["default_address"]("id"),
                 data["default_address"]("name")
-            ), cookie
+            ), data("default_address")), cookie
         )
 
     def __init__(self, cookie: requests.sessions.RequestsCookieJar):
@@ -73,16 +73,16 @@ class ShopeeBot:
         return Item(
             data["add_on_deal_info"]("add_on_deal_id"), data("brand"),
             data("flash_sale") is not None, data("itemid"), data("liked_count"),
-            [Item.Model(
+            _getordefault.first_ifn_null([Item.Model(
                 model.get("itemid", None), model.get("modelid", None), model.get("name", None),
                 model.get("price", None), model.get("stock", None)
-            ) for model in data["models"]],
+            ) for model in data["models"]], data("models")),
             data("name"), data("price"), data("shop_location"),
-            data("shopid"), data("stock"), Item.UpcomingFlashSale(
+            data("shopid"), data("stock"), _getordefault.first_ifn_null(Item.UpcomingFlashSale(
                 data["upcoming_flash_sale"]("end_time"),
                 data["upcoming_flash_sale"]("start_time"),
                 data["upcoming_flash_sale"]("stock")
-            ), data("view_count")
+            ), data("upcoming_flash_sale")), data("view_count")
         )
 
     def add_to_cart(self, item: Item, selected_model: int = 0) -> CartItem:
