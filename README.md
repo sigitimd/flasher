@@ -39,7 +39,7 @@ python main.py
 untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
 
 # Donasi
-Bagi yg mau donasi bisa chat Telegram saya dibawah (fast respon klo lagi ada)
+Bagi yg mau donasi atau request fitur, bisa chat Telegram saya dibawah (fast respon klo lagi ada)
 
 [<img src="https://img.shields.io/badge/telegram-mikeytzyw-blue?style=flat&logo=telegram">](https://t.me/mikeytzyw)
 
