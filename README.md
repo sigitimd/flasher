@@ -36,4 +36,16 @@ nah selanjutnya bisa langsung pakai botnya
 ```
 python main.py
 ```
-untuk speed, silahkan dicoba saja awokaowkokaowk
+untuk speed, silahkan dicoba saja
+
+# FAQ
+## Kok speednya gak sesuai sama yg di youtube?
+Ya jangan salahin scriptnya, salahin koneksi internet lo bambank.
+
+dan yg di youtube itu bukan ane ya tod
+
+## Gak dapet kode otp
+Ya harus gimana lagi, ane coba udh work, terus apanya yg harus ane fix kon***?
+
+## Kenapa lumba-lumba loncatnya rame-rame?
+Karena lo wibu
