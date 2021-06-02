@@ -51,3 +51,11 @@ class GetOrDefault:
 
     def __iter__(self):
         return iter(self.data)
+
+
+def first_ifn_null(first, second: t.Optional[t.Any]) -> t.Optional[t.Any]:
+    """
+    return the first argument if the second argument is not null
+    """
+    if second is not None:
+        return first
