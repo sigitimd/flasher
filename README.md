@@ -36,16 +36,23 @@ nah selanjutnya bisa langsung pakai botnya
 ```
 python main.py
 ```
-untuk speed, silahkan dicoba saja
+untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
+
+# Donasi
+Bagi yg mau donasi bisa chat Telegram saya dibawah (fast respon klo lagi ada)
+
+[<img src="https://img.shields.io/badge/telegram-mikeytzyw-blue?style=flat&logo=telegram">](https://t.me/mikeytzyw)
+
+Seikhlasnya saja :)
 
 # FAQ
 ## Kok speednya gak sesuai sama yg di youtube?
 Ya jangan salahin scriptnya, salahin koneksi internet lo bambank.
 
-dan yg di youtube itu bukan ane ya tod
+dan yg di youtube itu bukan saya ya, jdi jangan salah paham
 
 ## Gak dapet kode otp
-Ya harus gimana lagi, ane coba udh work, terus apanya yg harus ane fix kon***?
+Ya harus gimana lagi, saya coba udh work, mungkin anda belum beruntung
 
 ## Kenapa lumba-lumba loncatnya rame-rame?
 Karena lo wibu
