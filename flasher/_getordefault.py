@@ -5,9 +5,9 @@ import contextlib
 
 
 class GetOrDefault:
-    data: t.Optional[dict, list, str]
+    data: t.Optional[t.Union[dict, list, str]]
 
-    def __init__(self, dict_list_str: t.Optional[dict, list, str]):
+    def __init__(self, dict_list_str: t.Optional[t.Union[dict, list, str]]):
         self.data = dict_list_str
 
     def __call__(self, item, default=None):
@@ -26,7 +26,7 @@ class GetOrDefault:
         """
 
         if self.data is None:
-            return GetOrDefault(None)  # None
+            return self  # None
 
         with contextlib.suppress(KeyError, IndexError):
             x = self.data[item]
