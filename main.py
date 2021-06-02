@@ -42,7 +42,7 @@ def clear():
 
 
 def line():
-    print("-" * 32)
+    print(Fore.RESET, "-" * 32)
 
 
 def printerror(e: Exception):
