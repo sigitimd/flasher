@@ -158,7 +158,7 @@ def main():
             print(f"{Fore.GREEN}[{index+1}] {Fore.BLUE}{option}")
 
         print()
-        selected_option_info = int_input("Pilihan: ")-1
+        selected_option_info = int_input("Pilihan: ", len(selected_payment_channel.options))-1
 
     if not item.flash_sale:
         if item.upcoming_flash_sale is not None:
