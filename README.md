@@ -54,5 +54,8 @@ dan yg di youtube itu bukan saya ya, jdi jangan salah paham
 ## Gak dapet kode otp
 Ya harus gimana lagi, saya coba udh work, mungkin anda belum beruntung
 
+## Login error: username/password tidak valid
+Jika login menggunakan nomor telepon, harus di awali dengan 62 bukan 0, contoh `6289999999`
+
 ## Kenapa lumba-lumba loncatnya rame-rame?
 Karena lo wibu
