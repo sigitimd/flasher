@@ -62,6 +62,7 @@ def do_login():
         login, success = Login.init(user, password)
     except error.LoginError as e:
         printerror(e)
+        exit(1)
 
     if success:
         with open("cookie", 'wb') as f:
@@ -86,6 +87,7 @@ def do_login():
         }[verification_channel]).verify(input(INPUT + "Masukkan Kode Verifikasi: " + Fore.RESET))
     except error.LoginError as e:
         printerror(e)
+        exit(1)
 
     with open("cookie", 'wb') as f:
         pickle.dump(cookie, f)
