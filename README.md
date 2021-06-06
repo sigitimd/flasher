@@ -42,7 +42,12 @@ untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet bi
 Biasanya ada yg nanya, bisa gk dikasih notif telegram?
 nah jadi gini cara buat notif telegramnya.
 
-Pertama-tama, jalankan script `telegraminit.py` dengan argumen token bot telegram yang akan digunakan, contohnya seperti dibawah
+Jika blm install modul `python-telegram-bot`, bisa install dulu dengan perintah dibawah
+```
+pip install python-telegram-bot
+```
+
+Pertama, Jalankan script `telegraminit.py` dengan argumen token bot telegram yang akan digunakan, contohnya seperti dibawah
 ```
 python telegraminit.py 1416918954:UhIPbRilKWBMrSzxyHmVQY1l0rTBIiFefCV
 ```
