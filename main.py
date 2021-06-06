@@ -1,12 +1,11 @@
 import os
 import pickle
 import sys
-import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from colorama import Fore, init
 from flasher import Login, ShopeeBot, AvailablePaymentChannels, error
-from flasher.types import Payment
+from flasher.types import Payment, Item
 import colorlog
 
 
@@ -94,6 +93,26 @@ def do_login():
         SUCCESS << "Login sukses"
 
 
+def send_to_telegram(item: Item, selected_model: int, success: bool, endtime: timedelta):
+    # do import telegram here,
+    # because there will be an error if the user has not installed the python-telegram-bot module
+    import telegram
+
+    model = item.models[selected_model]
+
+    with open("telegramdata", 'rb') as f:
+        data = pickle.load(f)
+
+    bot = telegram.Bot(data["token"])
+    INFO << "Mengirim hasil ke Telegram..."
+    bot.send_message(data["chatid"], f"Nama: {item.name}\n"
+                                     f"Model: {model.name}\n"
+                                     f"Harga: {model.price // 99999}\n"
+                                     f"Brand: {item.brand}\n"
+                                     f"Status: {'Sukses' if success else 'Gagal'}\n"
+                                     f"\nTerbeli dalam waktu {endtime.seconds}.{endtime.microseconds // 1000} detik")
+
+
 def main():
     INFO << "Mengambil Informasi User..."
 
@@ -162,20 +181,21 @@ def main():
         print()
         selected_option_info = int_input("Pilihan: ", len(selected_payment_channel.options))-1
 
+    checkout_success = False
+
     if not item.flash_sale:
         if item.upcoming_flash_sale is not None:
             flash_sale_start = datetime.fromtimestamp(item.upcoming_flash_sale.start_time)
             INFO << f"Waktu Flash Sale: {flash_sale_start.strftime('%H:%M:%S')}"
-            print(INFO, "Menunggu Flash Sale...\r", end="")
-            time.sleep((datetime.fromtimestamp(item.upcoming_flash_sale.start_time) - datetime.now())
-                       .total_seconds() - 2)
-            INFO << "Bersiap siap...         "
+            print(INFO, "Menunggu Flash Sale...", end="")
 
             while not item.flash_sale:
                 item = bot.fetch_item(item.item_id, item.shop_id)
         else:
             ERROR << "Flash Sale telah lewat"
             exit(0)
+
+    end = None
 
     try:
         INFO << "Flash Sale telah tiba"
@@ -185,11 +205,16 @@ def main():
         INFO << "Checkout..."
         bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
         end = datetime.now() - start
-        INFO << f"Item berhasil dibeli dalam waktu {Fore.YELLOW}{end.seconds} detik {end.microseconds // 1000}" \
-                " milidetik"
-        SUCCESS << "Proses selesai"
+        INFO << f"Item berhasil dibeli dalam waktu {Fore.YELLOW}{end.seconds}.{end.microseconds // 1000} detik"
+        checkout_success = True
     except error.CheckoutError as e:
         printerror(e)
+
+    if os.path.isfile("telegramdata"):
+        # send the result to telegram
+        send_to_telegram(item, selected_model, checkout_success, end)
+
+    SUCCESS << "Proses selesai"
 
 
 if __name__ == "__main__":
