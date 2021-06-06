@@ -38,6 +38,25 @@ python main.py
 ```
 untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
 
+# Notifikasi Telegram
+Biasanya ada yg nanya, bisa gk dikasih notif telegram?
+nah jadi gini cara buat notif telegramnya.
+
+Jika blm install modul `python-telegram-bot`, bisa install dulu dengan perintah dibawah
+```
+pip install python-telegram-bot
+```
+
+Pertama, Jalankan script `telegraminit.py` dengan argumen token bot telegram yang akan digunakan, contohnya seperti dibawah
+```
+python telegraminit.py 1416918954:UhIPbRilKWBMrSzxyHmVQY1l0rTBIiFefCV
+```
+Setelah itu masuk ke aplikasi Telegram, lalu kirim pesan teks apapun ke bot anda. Karena `chatid` diperlukan agar bot dapat mengirim pesan.
+
+Jika menerima balasan `Inisialisasi Sukses` maka notif telegram sudah siap digunakan.
+
+Untuk menonaktifkan notif Telegram, simpel saja, tinggal hapus file `telegramdata`
+
 # Donasi
 Bagi yg mau donasi atau request fitur, bisa chat Telegram saya dibawah (fast respon klo lagi ada)
 
