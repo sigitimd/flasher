@@ -105,12 +105,13 @@ def send_to_telegram(item: Item, selected_model: int, success: bool, endtime: ti
 
     bot = telegram.Bot(data["token"])
     INFO << "Mengirim hasil ke Telegram..."
-    bot.send_message(data["chatid"], f"Nama: {item.name}\n"
-                                     f"Model: {model.name}\n"
-                                     f"Harga: {model.price // 99999}\n"
-                                     f"Brand: {item.brand}\n"
-                                     f"Status: {'Sukses' if success else 'Gagal'}\n"
-                                     f"\nTerbeli dalam waktu {endtime.seconds}.{endtime.microseconds // 1000} detik")
+    bot.send_message(data["chatid"], (f"Nama: {item.name}\n"
+                                      f"Model: {model.name}\n"
+                                      f"Harga: {model.price // 99999}\n"
+                                      f"Brand: {item.brand}\n"
+                                      f"Status: {'Sukses' if success else 'Gagal'}\n") +
+                                     (f"\nTerbeli dalam waktu {endtime.seconds}.{endtime.microseconds // 1000} detik"
+                                      if success else ""))
 
 
 def main():
