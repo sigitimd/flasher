@@ -188,7 +188,7 @@ def main():
         if item.upcoming_flash_sale is not None:
             flash_sale_start = datetime.fromtimestamp(item.upcoming_flash_sale.start_time)
             INFO << f"Waktu Flash Sale: {flash_sale_start.strftime('%H:%M:%S')}"
-            print(INFO, "Menunggu Flash Sale...", end="")
+            INFO << "Menunggu Flash Sale..."
 
             while not item.flash_sale:
                 item = bot.fetch_item(item.item_id, item.shop_id)
