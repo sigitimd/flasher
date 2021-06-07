@@ -52,7 +52,8 @@ Pertama, Jalankan script `telegraminit.py` dengan argumen token bot telegram yan
 python telegraminit.py 1416918954:UhIPbRilKWBMrSzxyHmVQY1l0rTBIiFefCV
 ```
 Setelah itu masuk ke aplikasi Telegram, lalu kirim pesan teks apapun ke bot anda. Karena `chatid` diperlukan agar bot dapat mengirim pesan.\
-Jika menerima balasan `Inisialisasi Sukses` maka notif telegram sudah siap digunakan.\
+Jika menerima balasan `Inisialisasi Sukses` maka notif telegram sudah siap digunakan.
+
 Untuk menonaktifkan notif Telegram, simpel saja, tinggal hapus file `telegramdata`
 
 ### Donasi
@@ -64,7 +65,7 @@ Seikhlasnya saja :)
 
 ### FAQ
 **Kok speednya gak sesuai sama yg di youtube?**\
-Ya jangan salahin scriptnya, salahin koneksi internet lo bambank.
+Ya jangan salahin scriptnya, salahin koneksi internet lo bambank.\
 dan yg di youtube itu bukan saya ya, jdi jangan salah paham
 
 **Gak dapet kode otp**\
