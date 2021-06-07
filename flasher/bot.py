@@ -24,7 +24,7 @@ class ShopeeBot:
                             cookies=cookie)
         data = _getordefault.GetOrDefault(resp.json())
 
-        if len(data) == 0:
+        if not data:
             raise error.LoginError("cookie tidak valid, silahkan coba login ulang")
 
         return User(
