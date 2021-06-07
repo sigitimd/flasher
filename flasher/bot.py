@@ -15,7 +15,7 @@ class ShopeeBot:
     session: requests.Session
 
     @staticmethod
-    def login(cookie: requests.sessions.RequestsCookieJar) -> User:
+    def loadsession(cookie: requests.sessions.RequestsCookieJar) -> User:
         resp = requests.get(_urls.MALL_PREFIX + _urls.PATHS["account_info"],
                             headers={
                                 "referer": _urls.PREFIX,
@@ -39,7 +39,7 @@ class ShopeeBot:
         )
 
     def __init__(self, cookie: requests.sessions.RequestsCookieJar):
-        self.session, self.user = requests.Session(), ShopeeBot.login(cookie)
+        self.session, self.user = requests.Session(), ShopeeBot.loadsession(cookie)
 
         if self.user.address is None:
             raise error.LoginError("silahkan atur alamat di akun anda terlebih dahulu")
