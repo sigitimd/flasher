@@ -36,6 +36,8 @@ class GetOrDefault:
 
             return x
 
+        return GetOrDefault(None)
+
     def __setitem__(self, key, value):
         with contextlib.suppress(KeyError, IndexError):
             self.data[key] = value
