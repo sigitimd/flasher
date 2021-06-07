@@ -3,6 +3,7 @@ import time
 import typing as t
 
 import requests
+from simplejson.errors import JSONDecodeError
 from . import _urls, _getordefault
 from .types import User, Item, CartItem, Payment
 from .constant import useragent
@@ -121,14 +122,19 @@ class ShopeeBot:
         resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout"],
                                  data=self.__checkout_get(item, payment))
 
-        if "error" in resp.json():
-            print(resp.text)
+        try:
+            if "error" in resp.json():
+                print(resp.text)
 
-            raise error.CheckoutError("checkout error")
-        elif resp.status_code == 406:
-            print(resp.text)
+                raise error.CheckoutError("checkout error")
+            elif resp.status_code == 406:
+                print(resp.text)
 
-            raise error.CheckoutError("item mungkin telah habis")
+                raise error.CheckoutError("item mungkin telah habis")
+        except JSONDecodeError:
+            print(resp.status_code)
+
+            raise error.CheckoutError("respon error")
 
     def __checkout_get(self, item: CartItem, payment: Payment) -> t.Optional[bytes]:
         true, false, null = True, False, None
