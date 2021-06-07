@@ -39,6 +39,10 @@ class ShopeeBot:
 
     def __init__(self, cookie: requests.sessions.RequestsCookieJar):
         self.session, self.user = requests.Session(), ShopeeBot.login(cookie)
+
+        if self.user.Address is None:
+            raise error.LoginError("silahkan atur alamat di akun anda terlebih dahulu")
+
         self.session.cookies.update(cookie)
         self.session.headers.update({
             "referer": _urls.MALL_PREFIX,
