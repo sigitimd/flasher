@@ -3,7 +3,6 @@ import time
 import typing as t
 
 import requests
-from simplejson.errors import JSONDecodeError
 from . import _urls, _getordefault
 from .types import User, Item, CartItem, Payment
 from .constant import useragent
@@ -131,7 +130,7 @@ class ShopeeBot:
                 print(resp.text)
 
                 raise error.CheckoutError("item mungkin telah habis")
-        except JSONDecodeError:
+        except ValueError:
             print(resp.status_code)
 
             raise error.CheckoutError("respon error")
