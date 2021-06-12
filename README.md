@@ -1,12 +1,12 @@
 # flasher
 A simple, fast flash sale bot for Shopee without web automation
 
-# Bahan-Bahan (PC/Laptop)
+# Bahan-Bahan
+### PC/Laptop
 - Python 3.8.x
 
 Download Python di https://www.python.org/downloads/
-
-# Bahan-Bahan (Android)
+### Android
 - Termux
 - Python 3.8.x
 
