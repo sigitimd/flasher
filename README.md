@@ -1,12 +1,12 @@
 # flasher
 A simple, fast flash sale bot for Shopee without web automation
 
-### Bahan-Bahan (PC/Laptop)
+# Bahan-Bahan (PC/Laptop)
 - Python 3.8.x
 
 Download Python di https://www.python.org/downloads/
 
-### Bahan-Bahan (Android)
+# Bahan-Bahan (Android)
 - Termux
 - Python 3.8.x
 
@@ -15,7 +15,7 @@ Install Termux di play store lalu install Python dengan perintah berikut:
 pkg install python
 ```
 
-### Penggunaan
+# Penggunaan
 Pertama, clone repo ini dulu
 ```
 git clone https://github.com/bro-11/flasher
@@ -38,7 +38,7 @@ python main.py
 ```
 untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
 
-### Notifikasi Telegram
+# Notifikasi Telegram
 Biasanya ada yg nanya, bisa gk dikasih notif telegram?\
 nah jadi gini cara buat notif telegramnya.
 
@@ -56,14 +56,14 @@ Jika menerima balasan `Inisialisasi Sukses` maka notif telegram sudah siap digun
 
 Untuk menonaktifkan notif Telegram, simpel saja, tinggal hapus file `telegramdata`
 
-### Donasi
+# Donasi
 Bagi yg mau donasi atau request fitur, bisa chat Telegram saya dibawah (fast respon klo lagi ada)
 
 [<img src="https://img.shields.io/badge/telegram-mikeytzyw-blue?style=flat&logo=telegram">](https://t.me/mikeytzyw)
 
 Seikhlasnya saja :)
 
-### FAQ
+# FAQ
 **Kok speednya gak sesuai sama yg di youtube?**\
 Ya jangan salahin scriptnya, salahin koneksi internet lo bambank.\
 dan yg di youtube itu bukan saya ya, jdi jangan salah paham
