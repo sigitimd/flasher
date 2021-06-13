@@ -1,6 +1,7 @@
 import re
 import time
 import typing as t
+import copy
 
 import requests
 from . import _urls, _getordefault
@@ -174,9 +175,10 @@ class ShopeeBot:
             raise error.CheckoutError("respon error")
 
     def _checkout_get(self, item: CartItem) -> t.Optional[bytes]:
-        self._checkout_data["timestamp"] = round(time.time())
-        self._checkout_data["shoporders"][0]["shop"] = {"shopid": item.shopid}
-        self._checkout_data["shoporders"][0]["items"] = [
+        data = copy.deepcopy(self._checkout_data)
+        data["timestamp"] = round(time.time())
+        data["shoporders"][0]["shop"] = {"shopid": item.shopid}
+        data["shoporders"][0]["items"] = [
             {
                 "itemid": item.itemid,
                 "modelid": item.modelid,
@@ -187,7 +189,7 @@ class ShopeeBot:
             }
         ]
         resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout_get"],
-                                 json=self._checkout_data)
+                                 json=data)
 
         if not resp.ok:
             print(resp.status_code)
@@ -286,4 +288,3 @@ class ShopeeBot:
             ],
             "order_update_info": {}
         }
-
