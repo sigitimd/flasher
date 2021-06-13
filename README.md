@@ -38,6 +38,20 @@ python main.py
 ```
 untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
 
+# Opsi Checkout Lanjutan
+Mungkin ada yg ingin mengganti opsi checkout seperti penggunaan kode voucher, channel logistik, dropshipping, dll.
+
+Nama | Keterangan
+-----|-----------
+enable_dropshipping|Mengaktifkan fitur dropshipping
+disable_dropshipping|menonaktifkan fitur dropshipping
+logistic|mengganti channel logistik
+payment|mengganti metode pembayaran
+use_coins|mengaktifkan/menonaktifkan penggunaan koin
+free_shipping_voucher|menggunakan voucher pengiriman
+
+Catatan: opsi diatas hanyalah pilihan dan belum tentu work jika diubah, saran saya gunakan opsi default saja karena menurut saya itu yg lebih berpeluang work di segala kondisi
+
 # Notifikasi Telegram
 Biasanya ada yg nanya, bisa gk dikasih notif telegram?\
 nah jadi gini cara buat notif telegramnya.
