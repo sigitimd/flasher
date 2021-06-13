@@ -27,8 +27,8 @@ class ShopeeBot:
             self.__bot._checkout_data["dropshipping_info"]["enabled"] = False
 
         def logistic(self, channel: Logistic):
-            self.__bot._checkout_data["shipping_orders"]["selected_logistic_channel_id"] = channel.channelid
-            self.__bot._checkout_data["shipping_orders"]["selected_preferred_delivery_time_option_id"] = channel.optionid
+            self.__bot._checkout_data["shipping_orders"][0]["selected_logistic_channel_id"] = channel.channelid
+            self.__bot._checkout_data["shipping_orders"][0]["selected_preferred_delivery_time_option_id"] = channel.optionid
 
         def payment(self, payment: Payment):
             self.__bot._checkout_data["selected_payment_channel_data"]["channelid"] = payment.channel_id
