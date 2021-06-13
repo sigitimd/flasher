@@ -85,6 +85,9 @@ dan yg di youtube itu bukan saya ya, jdi jangan salah paham
 **Gak dapet kode otp**\
 Ya harus gimana lagi, saya coba udh work, mungkin anda belum beruntung
 
+**CheckoutError: metode pembayaran yang anda pilih tidak tersedia**\
+Lihat issue [#14](https://github.com/bro-11/flasher/issues/14)
+
 **Login error: username/password tidak valid**\
 Jika login menggunakan nomor telepon, harus di awali dengan 62 bukan 0, contoh `6289999999`
 
