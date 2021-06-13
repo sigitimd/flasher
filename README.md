@@ -38,6 +38,20 @@ python main.py
 ```
 untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
 
+# Opsi Checkout
+Mungkin ada yg ingin mengganti opsi checkout seperti penggunaan kode voucher, channel logistik, dropshipping, dll.
+
+Nama | Keterangan
+-----|-----------
+enable_dropshipping|Mengaktifkan fitur dropshipping
+disable_dropshipping|menonaktifkan fitur dropshipping
+logistic|mengganti channel logistik
+payment|mengganti metode pembayaran
+use_coins|mengaktifkan/menonaktifkan penggunaan koin
+free_shipping_voucher|menggunakan voucher pengiriman
+
+Catatan: opsi diatas hanyalah pilihan dan belum tentu work jika diubah, saran saya gunakan opsi default saja karena menurut saya itu yg lebih berpeluang work di segala kondisi
+
 # Notifikasi Telegram
 Biasanya ada yg nanya, bisa gk dikasih notif telegram?\
 nah jadi gini cara buat notif telegramnya.
@@ -70,6 +84,9 @@ dan yg di youtube itu bukan saya ya, jdi jangan salah paham
 
 **Gak dapet kode otp**\
 Ya harus gimana lagi, saya coba udh work, mungkin anda belum beruntung
+
+**CheckoutError: metode pembayaran yang anda pilih tidak tersedia**\
+Lihat issue [#14](https://github.com/bro-11/flasher/issues/14)
 
 **Login error: username/password tidak valid**\
 Jika login menggunakan nomor telepon, harus di awali dengan 62 bukan 0, contoh `6289999999`
