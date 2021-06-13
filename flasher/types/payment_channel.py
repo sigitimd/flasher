@@ -31,17 +31,17 @@ class Payment:
     option: t.Optional[str]
     version: int
 
-    @staticmethod
-    def from_channel(channel: PaymentChannel, selected_option: t.Optional[t.Union[int, str]] = None) -> Payment:
+    @classmethod
+    def from_channel(cls, channel: PaymentChannel, selected_option: t.Optional[t.Union[int, str]] = None) -> Payment:
         type_ = type(selected_option)
 
         if type_ == int:
-            return Payment(channel.name, channel.channel_id,
-                           channel.options[channel.option_keys()[selected_option]], channel.version)
+            return cls(channel.name, channel.channel_id,
+                       channel.options[channel.option_keys()[selected_option]], channel.version)
         elif type_ == str:
-            return Payment(channel.name, channel.channel_id, channel.options[selected_option], channel.version)
+            return cls(channel.name, channel.channel_id, channel.options[selected_option], channel.version)
 
         if channel.has_option():
             raise ValueError("The channel has an option")
 
-        return Payment(channel.name, channel.channel_id, None, channel.version)
+        return cls(channel.name, channel.channel_id, None, channel.version)

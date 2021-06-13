@@ -4,14 +4,50 @@ import typing as t
 
 import requests
 from . import _urls, _getordefault
-from .types import User, Item, CartItem, Payment
+from .types import User, Item, CartItem, Payment, Logistic
 from .constant import useragent
 from . import error
 
 
 class ShopeeBot:
+    class _CheckoutDataNS:
+        """let's just say a namespace for some method that changes checkout data
+        """
+        __bot: 'ShopeeBot'
+
+        def __init__(self, bot: 'ShopeeBot'):
+            self.__bot = bot
+
+        def enable_dropshipping(self, phone_number: str, name: str):
+            self.__bot._checkout_data["dropshipping_info"]["enabled"] = True
+            self.__bot._checkout_data["dropshipping_info"]["phone_number"] = phone_number
+            self.__bot._checkout_data["dropshipping_info"]["name"] = name
+
+        def disable_dropshipping(self):
+            self.__bot._checkout_data["dropshipping_info"]["enabled"] = False
+
+        def logistic(self, channel: Logistic):
+            self.__bot._checkout_data["shipping_orders"]["selected_logistic_channel_id"] = channel.channelid
+            self.__bot._checkout_data["shipping_orders"]["selected_preferred_delivery_time_option_id"] = channel.optionid
+
+        def payment(self, payment: Payment):
+            self.__bot._checkout_data["selected_payment_channel_data"]["channelid"] = payment.channel_id
+            self.__bot._checkout_data["selected_payment_channel_data"]["version"] = payment.version
+
+            if payment.option is not None:
+                self.__bot._checkout_data["selected_payment_channel_data"]["selected_item_option_info"] = payment.option
+
+        def use_coins(self, enabled: bool):
+            self.__bot._checkout_data["promotion_data"]["use_coins"] = enabled
+
+        def free_shipping_voucher(self, voucher_id: int, voucher_code: str):
+            self.__bot._checkout_data["promotion_data"]["free_shipping_voucher_id"] = voucher_id
+            self.__bot._checkout_data["promotion_data"]["free_shipping_voucher_code"] = voucher_code
+
     user: User
     session: requests.Session
+    checkoutconfig: _CheckoutDataNS
+    _checkout_data: t.Dict[str, t.Any]
 
     @staticmethod
     def loadsession(cookie: requests.sessions.RequestsCookieJar) -> User:
@@ -50,6 +86,8 @@ class ShopeeBot:
             "x-csrftoken": self.session.cookies.get("csrftoken"),
             "user-agent": useragent.ANDROIDAPP
         })
+        self._initialize_data()
+        self.checkoutconfig = ShopeeBot._CheckoutDataNS(self)
 
     def set_user_agent(self, ua: str):
         self.session.headers.update({"user-agent": ua})
@@ -117,9 +155,9 @@ class ShopeeBot:
             item.price, item.shop_id
         )
 
-    def checkout(self, item: CartItem, payment: Payment):
+    def checkout(self, item: CartItem):
         resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout"],
-                                 data=self.__checkout_get(item, payment))
+                                 data=self._checkout_get(item))
 
         try:
             if "error" in resp.json():
@@ -135,108 +173,22 @@ class ShopeeBot:
 
             raise error.CheckoutError("respon error")
 
-    def __checkout_get(self, item: CartItem, payment: Payment) -> t.Optional[bytes]:
-        true, false, null = True, False, None
+    def _checkout_get(self, item: CartItem) -> t.Optional[bytes]:
+        self._checkout_data["timestamp"] = round(time.time())
+        self._checkout_data["shoporders"][0]["shop"] = {"shopid": item.shopid}
+        self._checkout_data["shoporders"][0]["items"] = [
+            {
+                "itemid": item.itemid,
+                "modelid": item.modelid,
+                "add_on_deal_id": item.add_on_deal_id,
+                "is_add_on_sub_item": False,
+                "item_group_id": item.group_id,
+                "quantity": 1
+            }
+        ]
         resp = self.session.post(_urls.MALL_PREFIX + _urls.PATHS["checkout_get"],
-                                 json={
-                                     "timestamp": round(time.time()),
-                                     "shoporders": [
-                                         {
-                                             "shop": {
-                                                 "shopid": item.shopid
-                                             },
-                                             "items": [
-                                                 {
-                                                     "itemid": item.itemid,
-                                                     "modelid": item.modelid,
-                                                     "add_on_deal_id": item.add_on_deal_id,
-                                                     "is_add_on_sub_item": false,
-                                                     "item_group_id": item.group_id,
-                                                     "quantity": 1
-                                                 }
-                                             ],
-                                             "logistics": {
-                                                 "recommended_channelids": null
-                                             },
-                                             "buyer_address_data": {
-                                                 "tax_address": "",
-                                                 "address_type": 0,
-                                                 "addressid": self.user.address.id_
-                                             },
-                                             "selected_logistic_channelid": 8003,
-                                             "shipping_id": 1,
-                                             "selected_preferred_delivery_time_option_id": 0,
-                                             "selected_preferred_delivery_time_slot_id": null,
-                                             "selected_preferred_delivery_instructions": {
-                                                 "0": "",
-                                                 "1": "0"
-                                             }
-                                         }
-                                     ],
-                                     "selected_payment_channel_data": {
-                                         "channel_id": payment.channel_id,
-                                         "version": payment.version,
-                                         "selected_item_option_info": {
-                                             "option_info": payment.option if payment.option is not None else ""
-                                         },
-                                         "text_info": {}
-                                     },
-                                     "promotion_data": {
-                                         "use_coins": false,
-                                         "free_shipping_voucher_info": {
-                                             "free_shipping_voucher_id": 0,
-                                             "disabled_reason": null,
-                                             "free_shipping_voucher_code": ""
-                                         },
-                                         "platform_vouchers": [],
-                                         "shop_vouchers": [],
-                                         "check_shop_voucher_entrances": true,
-                                         "auto_apply_shop_voucher": false
-                                     },
-                                     "device_info": {
-                                         "device_id": "",
-                                         "device_fingerprint": "",
-                                         "tongdun_blackbox": "",
-                                         "buyer_payment_info": {
-                                             "is_jko_app_installed": false
-                                         }
-                                     },
-                                     "cart_type": 0,
-                                     "client_id": 0,
-                                     "tax_info": {
-                                         "tax_id": ""
-                                     },
-                                     "dropshipping_info": {
-                                         "phone_number": "",
-                                         "enabled": false,
-                                         "name": ""
-                                     },
-                                     "shipping_orders": [
-                                         {
-                                             "sync": true,
-                                             "logistics": {
-                                                 "recommended_channelids": null
-                                             },
-                                             "buyer_address_data": {
-                                                 "tax_address": "",
-                                                 "address_type": 0,
-                                                 "addressid": self.user.address.id_
-                                             },
-                                             "selected_logistic_channelid": 8003,
-                                             "shipping_id": 1,
-                                             "shoporder_indexes": [
-                                                 0
-                                             ],
-                                             "selected_preferred_delivery_time_option_id": 0,
-                                             "selected_preferred_delivery_time_slot_id": null,
-                                             "selected_preferred_delivery_instructions": {
-                                                 "0": "",
-                                                 "1": "0"
-                                             }
-                                         }
-                                     ],
-                                     "order_update_info": {}
-                                 })
+                                 json=self._checkout_data)
+
         if not resp.ok:
             print(resp.status_code)
             print(resp.text)
@@ -244,3 +196,94 @@ class ShopeeBot:
             raise error.CheckoutError("error mengambil info checkout")
 
         return resp.content
+
+    def _initialize_data(self):
+        self._checkout_data = {
+            "timestamp": None,  #
+            "shoporders": [
+                {
+                    "shop": None,  #
+                    "items": [],  #
+                    "logistics": {
+                        "recommended_channelids": None
+                    },
+                    "buyer_address_data": {
+                        "tax_address": "",
+                        "address_type": 0,
+                        "addressid": self.user.address.id_
+                    },
+                    "selected_logistic_channelid": 8003,  #
+                    "shipping_id": 1,
+                    "selected_preferred_delivery_time_option_id": 0,  #
+                    "selected_preferred_delivery_time_slot_id": None,
+                    "selected_preferred_delivery_instructions": {
+                        "0": "",
+                        "1": "0"
+                    }
+                }
+            ],
+            "selected_payment_channel_data": {
+                "channel_id": 8003200,  #
+                "version": 2,  #
+                "selected_item_option_info": {
+                    "option_info": ""  #
+                },
+                "text_info": {}
+            },
+            "promotion_data": {
+                "use_coins": False,  #
+                "free_shipping_voucher_info": {
+                    "free_shipping_voucher_id": 0,  #
+                    "disabled_reason": None,
+                    "free_shipping_voucher_code": ""  #
+                },
+                "platform_vouchers": [],
+                "shop_vouchers": [],
+                "check_shop_voucher_entrances": True,
+                "auto_apply_shop_voucher": False
+            },
+            "device_info": {
+                "device_id": "",
+                "device_fingerprint": "",
+                "tongdun_blackbox": "",
+                "buyer_payment_info": {
+                    "is_jko_app_installed": False
+                }
+            },
+            "cart_type": 0,
+            "client_id": 0,
+            "tax_info": {
+                "tax_id": ""
+            },
+            "dropshipping_info": {
+                "phone_number": "",  #
+                "enabled": False,  #
+                "name": ""  #
+            },
+            "shipping_orders": [
+                {
+                    "sync": True,
+                    "logistics": {
+                        "recommended_channelids": None
+                    },
+                    "buyer_address_data": {
+                        "tax_address": "",
+                        "address_type": 0,
+                        "addressid": self.user.address.id_
+                    },
+                    "selected_logistic_channelid": 8003,  #
+                    "shipping_id": 1,
+                    "shoporder_indexes": [
+                        0
+                    ],
+                    "selected_preferred_delivery_time_option_id": 0,  #
+                    "selected_preferred_delivery_time_slot_id": None,
+                    "selected_preferred_delivery_instructions": {
+                        "0": "",
+                        "1": "0"
+                    }
+                }
+            ],
+            "order_update_info": {}
+        }
+

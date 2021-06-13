@@ -4,9 +4,10 @@ import sys
 from datetime import datetime, timedelta
 
 from colorama import Fore, init
-from flasher import Login, ShopeeBot, AvailablePaymentChannels, error
-from flasher.types import Payment, Item
+from flasher import Login, ShopeeBot, Payment, AvailablePaymentChannels, error
+from flasher.types import Item
 import colorlog
+import config
 
 
 init()
@@ -182,6 +183,8 @@ def main():
         print()
         selected_option_info = int_input("Pilihan: ", len(selected_payment_channel.options))-1
 
+    bot.checkoutconfig.payment(Payment.from_channel(selected_payment_channel, selected_option_info))
+
     checkout_success = False
 
     if not item.flash_sale:
@@ -189,24 +192,31 @@ def main():
             flash_sale_start = datetime.fromtimestamp(item.upcoming_flash_sale.start_time)
             INFO << f"Waktu Flash Sale: {flash_sale_start.strftime('%H:%M:%S')}"
             INFO << "Menunggu Flash Sale..."
-
-            while not item.flash_sale:
-                item = bot.fetch_item(item.item_id, item.shop_id)
         else:
             ERROR << "Flash Sale telah lewat"
             exit(0)
 
+    config.configure(bot)
     end = None
 
     try:
+        print("Refreshing...", end="\r")
+
+        while not item.flash_sale:
+            refresh_start = datetime.now()
+            item = bot.fetch_item(item.item_id, item.shop_id)
+            refresh_end = datetime.now() - refresh_start
+            print(INFO, "Refresh delay:", refresh_end.total_seconds(), "detik", "    ", end="\r")
+
+        print()
         INFO << "Flash Sale telah tiba"
         start = datetime.now()
         INFO << "Menambah item ke Cart..."
         cart_item = bot.add_to_cart(item, selected_model)
         INFO << "Checkout..."
-        bot.checkout(cart_item, Payment.from_channel(selected_payment_channel, selected_option_info))
+        bot.checkout(cart_item)
         end = datetime.now() - start
-        INFO << f"Item berhasil dibeli dalam waktu {Fore.YELLOW}{end.seconds}.{end.microseconds // 1000} detik"
+        INFO << f"Item berhasil dibeli dalam waktu {Fore.YELLOW}{end.total_seconds()} detik"
         checkout_success = True
     except error.CheckoutError as e:
         printerror(e)
