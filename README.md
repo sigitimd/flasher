@@ -38,7 +38,7 @@ python main.py
 ```
 untuk speed, klo saya paling cepet `1.617 detik` menggunakan koneksi internet biasa (kartu 3).
 
-# Opsi Checkout Lanjutan
+# Opsi Checkout
 Mungkin ada yg ingin mengganti opsi checkout seperti penggunaan kode voucher, channel logistik, dropshipping, dll.
 
 Nama | Keterangan
