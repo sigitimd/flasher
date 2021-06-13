@@ -200,7 +200,7 @@ def main():
     end = None
 
     try:
-        print("Refreshing...", end="\r")
+        print(INFO, "Refreshing...", end="\r")
 
         while not item.flash_sale:
             refresh_start = datetime.now()
