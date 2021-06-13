@@ -192,6 +192,7 @@ def main():
             flash_sale_start = datetime.fromtimestamp(item.upcoming_flash_sale.start_time)
             INFO << f"Waktu Flash Sale: {flash_sale_start.strftime('%H:%M:%S')}"
             INFO << "Menunggu Flash Sale..."
+            print(INFO, "Refreshing...", end="\r")
         else:
             ERROR << "Flash Sale telah lewat"
             exit(0)
@@ -200,8 +201,6 @@ def main():
     end = None
 
     try:
-        print(INFO, "Refreshing...", end="\r")
-
         while not item.flash_sale:
             refresh_start = datetime.now()
             item = bot.fetch_item(item.item_id, item.shop_id)
